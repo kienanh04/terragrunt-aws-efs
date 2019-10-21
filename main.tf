@@ -19,13 +19,15 @@ data "terraform_remote_state" "vpc" {
   }
 }
 
+data "aws_availability_zones" "available" {}
+
 data "aws_security_group" "efs" {
   tags   = "${merge(var.source_security_group_tags,map("Env", "${var.project_env}"))}"
-  vpc_id = ["${data.terraform_remote_state.vpc.vpc_id}"]
+  vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
 }
 
 resource "null_resource" "azs" {
-  count    = "${length(local.subnets}"
+  count    = "${length(local.subnets)}"
   triggers = {
     az = "${element(data.aws_availability_zones.available.names,count.index)}"
   }
@@ -40,7 +42,7 @@ locals {
 module "efs" {
   source     = "git::https://github.com/thanhbn87/terraform-aws-efs.git?ref=0.9.1"
   namespace  = "${var.namespace}"
-  stage      = "${var.project_env}"
+  stage      = "${var.project_env_short}"
   name       = "${var.name}"
   attributes = ["efs"]
 

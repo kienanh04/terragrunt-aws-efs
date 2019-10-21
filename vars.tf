@@ -19,3 +19,4 @@ variable "name" { default = "" }
 variable "namespace" { default = "" }
 variable "source_security_group_tags" { default = {} }
 variable "dns_private" { default = true }
+variable "dns_name" { default = "" }
